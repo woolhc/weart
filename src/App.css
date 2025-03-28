@@ -1,0 +1,217 @@
+/* App.css */
+
+/* 基础样式 */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  background-color: #fff;
+  color: #282626;
+}
+
+/* 头部样式 */
+header {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
+}
+
+/* 导航菜单样式 */
+.nav-item {
+  position: relative;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #2F1C3A;
+  transition: width 0.3s;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background-color: #2F1C3A;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #3a2647;
+}
+
+.btn-outline {
+  border: 2px solid #2F1C3A;
+  color: #2F1C3A;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-outline:hover {
+  background-color: #2F1C3A;
+  color: white;
+}
+
+/* 圆形导航按钮样式 */
+.circle-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #2F1C3A;
+  background-color: white;
+  color: #2F1C3A;
+  transition: all 0.3s;
+}
+
+.circle-btn:hover {
+  background-color: #2F1C3A;
+  color: white;
+}
+
+/* 容器最大宽度 */
+.container {
+  max-width: 1280px;
+}
+
+/* 卡片和区块的通用样式 */
+.card {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: rgba(40, 38, 38, 0.88);
+  margin-bottom: 2rem;
+}
+
+/* 确保Figma设计中的特定颜色 */
+.text-primary {
+  color: #2F1C3A;
+}
+
+.bg-primary {
+  background-color: #2F1C3A;
+}
+
+.text-accent {
+  color: #F46801;
+}
+
+.bg-accent {
+  background-color: #F46801;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* 轮播图样式优化 */
+.slick-dots {
+  bottom: 20px !important;
+  z-index: 20;
+  position: absolute;
+  width: 252px !important;
+  margin: 0 auto !important;
+  left: 0;
+  right: 0;
+}
+
+.ad-carousel {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+.ad-carousel .slick-list,
+.ad-carousel .slick-track,
+.ad-carousel .slick-slide,
+.ad-carousel .slick-slide > div {
+  height: 100%;
+}
+
+.ad-carousel .slick-slide > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-dots .slick-active div {
+  background-color: #87748A !important;
+}
+
+/* 证书滚动区样式 */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  header .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .vertical-text {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+  
+  .why-we-art-section .grid {
+    height: auto;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    grid-template-rows: auto !important;
+  }
+}
