@@ -128,9 +128,10 @@ const Header = () => {
         onClick={toggleMobileMenu}
       />
       <nav
-        className={`fixed right-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed right-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ maxHeight: '100vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
       >
         <div className="p-4 border-b">
           <button
@@ -141,7 +142,7 @@ const Header = () => {
             {language}
           </button>
         </div>
-        <div className="py-4">
+        <div className="py-4 h-full overflow-y-auto">
           {menuItems.map((item, index) => (
             <div key={index} className="px-4">
               <Link
