@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useMediaQuery } from 'react-responsive';
 // import ads_1 from '@/pages/home/assets/ads_1.jpg';
 // import ads_2 from '@/pages/home/assets/ads_2.jpg';
 // import ads_3 from '@/pages/home/assets/ads_3.jpg';
@@ -12,6 +13,10 @@ import 'slick-carousel/slick/slick-theme.css';
 // import cert3 from '@/pages/home/assets/cert_3.jpg';
 
 const Home = () => {
+  // 响应式判断
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const isTablet = useMediaQuery({ minWidth: 769, maxWidth: 1024 });
+
   // 共用状态
   const [currentCarouselSlide, setCurrentCarouselSlide] = useState(0);
   const [currentTeacherSlide, setCurrentTeacherSlide] = useState(0);
@@ -28,9 +33,9 @@ const Home = () => {
     autoplaySpeed: 5000,
     arrows: false,
     customPaging: () => (
-      <div className="w-3 h-3 mx-1 rounded-full bg-[rgba(135,116,138,0.48)]"></div>
+      <div className="w-2 md:w-3 h-2 md:h-3 mx-1 rounded-full bg-[rgba(135,116,138,0.48)]"></div>
     ),
-    dotsClass: "slick-dots custom-dots flex justify-center items-center space-x-2",
+    dotsClass: "slick-dots custom-dots flex justify-center items-center space-x-2 mb-4 md:mb-8",
     pauseOnHover: false,
   };
 
@@ -115,16 +120,17 @@ const Home = () => {
     }
   ];
 
+  // 教师轮播图设置
   const teacherSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 2,
+    slidesToShow: isMobile ? 1 : 2,
+    slidesToScroll: isMobile ? 1 : 2,
     autoplay: true,
     autoplaySpeed: 4000,
     arrows: false,
-    beforeChange: (_, next) => setCurrentTeacherSlide(next/2),
+    beforeChange: (_, next) => setCurrentTeacherSlide(next/(isMobile ? 1 : 2)),
     customPaging: (i) => (
       <div
         className={`w-2 h-2 mx-1 rounded-full ${
@@ -132,7 +138,7 @@ const Home = () => {
         }`}
       ></div>
     ),
-    dotsClass: "slick-dots custom-dots flex justify-center items-center mt-8 space-x-2"
+    dotsClass: "slick-dots custom-dots flex justify-center items-center mt-4 md:mt-8 space-x-2"
   };
 
   // PortfolioShowcase 部分
@@ -198,40 +204,24 @@ const Home = () => {
 
   return (
     <main className="overflow-hidden w-full">
-      {/* AdCarousel 部分 */}
-      <section className="pt-0 w-full">
-        {/* 主轮播图区域 */}
-        <div className="w-[1440px] mx-auto h-[683px]">
-          <Slider {...adCarouselSettings} className="h-full ad-carousel">
-            {ads.map((ad) => (
-              <div key={ad.id} className="h-full outline-none">
-                <div className="relative w-full h-full">
-                  {/* 轮播图背景 */}
-                  <div className="flex justify-center items-center w-full h-full bg-white">
-                    <div className="flex relative justify-center items-center w-full h-full">
-                      {/* 轮播图片 */}
-                      <img 
-                        src={`${ad.image}`} 
-                        alt={`轮播图 ${ad.id}`} 
-                        className="object-cover w-full h-full"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 400' preserveAspectRatio='xMidYMid meet'%3E%3Crect fill='%23F0F0F0' width='800' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='24' fill='%23666'%3E轮播图 " + ad.id + "%3C/text%3E%3C/svg%3E";
-                        }}
-                      />
-                      {/* 描述文字 */}
-                      <div className="absolute bottom-[120px] right-[40px]">
-                        <p className="font-['Inter'] font-semibold text-[20px] leading-[24px] text-[#404040]">
-                          {ad.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      {/* Ad Carousel Section */}
+      <section className="relative w-full">
+        <Slider {...adCarouselSettings} className="w-full">
+          {ads.map((ad) => (
+            <div key={ad.id} className="relative w-full h-[300px] md:h-[500px] lg:h-[600px]">
+              <img
+                src={ad.image}
+                alt={ad.description}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
+                <p className="text-white text-lg md:text-2xl lg:text-3xl font-medium">
+                  {ad.description}
+                </p>
               </div>
-            ))}
-          </Slider>
-        </div>
+            </div>
+          ))}
+        </Slider>
       </section>
 
       {/* 证书横向滚动展示区域 - 固定高度243px */}
@@ -262,191 +252,113 @@ const Home = () => {
         </div>
       </section>
 
-      {/* WhyWeArt 部分 */}
-      <section className="w-[1440px] mx-auto h-[801px] mb-10 relative bg-white overflow-hidden">
-        <div className="absolute left-[103px] top-[39px]">
-          <h2 className="text-[25px] font-normal text-[#431B26] leading-[1.21em]">
-            为什么选择WeArt
-          </h2>
-        </div>
-        
-        {/* 导航和内容区域 */}
-        <div className="absolute top-[81px] w-full h-[720px] flex">
-          {navItems.map((item) => {
-            // 判断是否为当前激活项
-            const isActive = activeNavItem === item.id;
-            
-            // 设置不同的宽度
-            const width = isActive ? 'calc(100% - 340px)' : '85px';
-            
-            return (
-              <div 
-                key={item.id} 
-                onClick={() => handleNavItemClick(item.id)}
-                className={`h-[720px] relative cursor-pointer ${isActive ? 'bg-white' : item.bgColor}`}
-                style={{ 
-                  width,
-                  order: item.id,
-                  transition: 'width 500ms ease'
-                }}
-              >
-                {/* 非激活状态 - 收缩按钮 */}
-                {!isActive && (
-                  <div className="relative w-full h-full">
-                    {/* 垂直文本区域 - 参考示意图位置 */}
-                    <div className="absolute bottom-[200px] left-1/2 -translate-x-1/2">
-                      <p 
-                        className={`${item.textColor} text-[33px] font-black whitespace-nowrap`}
-                        style={{
-                          transform: 'rotate(-90deg)',
-                          transformOrigin: 'center'
-                        }}
-                      >
-                        {item.text}
-                      </p>
-                    </div>
-                    
-                    {/* 底部标识符 */}
-                    <div className="absolute right-6 bottom-6 w-7 h-7 rounded-full border-2 border-[#2F1C3A] flex items-center justify-center">
-                      <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
-                        <path d="M1 1L6 6L1 11" stroke="#2F1C3A" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                    </div>
-                  </div>
-                )}
-                
-                {/* 内容区域 - 激活状态可见 */}
-                {isActive && (
-                  <div className="w-full h-full">
-                    <div className="flex flex-col px-16 absolute bottom-[120px] w-full">
-                      <h3 className="text-[63px] font-black text-[#311C3B] leading-[76px] mb-8">
-                        {item.text}
-                      </h3>
-                      <p className="text-[25px] text-[#311C3B] leading-[30px] max-w-[765px]">
-                        {item.content}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* FeaturedCourses 部分 */}
-      <section className="w-[1440px] mx-auto py-16 mb-10 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="mb-12">
-            <h2 className="text-[25px] font-normal text-[#431B26] leading-[1.21em] container mx-auto px-4 mb-8">
-              精选课程
-            </h2>
-          </div>
-          
-          {/* 课程列表 3x2布局 */}
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {courses.map(course => (
-              <div key={course.id} className="w-[342px] h-[392px] bg-white rounded-lg overflow-hidden relative">
-                {/* 课程图片 */}
-                <div className="w-full h-[300px] bg-gray-200">
-                  {course.image ? (
-                    <img src={course.image} alt={course.title} className="object-cover w-full h-full" />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200" />
-                  )}
-                </div>
-                
-                {/* 课程标题 */}
-                <div className="absolute right-0 bottom-0 left-0 p-6 bg-white">
-                  <h3 className="text-[20px] font-medium text-[#311C3B] text-center">{course.title}</h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* InstructorTeam 部分 */}
-      <section className="w-[1440px] mx-auto bg-white mb-10">
-        <div className="pl-[103px] pt-[39px] pb-[120px]">
-          <div className="mb-[60px]">
-            <h2 className="text-[25px] font-normal text-[#431B26] leading-[1.21em] container mx-auto px-4 mb-8">
-              师资团队
-            </h2>
-          </div>
-          
-          {/* 教师轮播 1*2布局 */}
-          <div className="w-[1234px]">
-            <Slider {...teacherSettings}>
-              {teachers.map(teacher => (
-                <div key={teacher.id} className="px-[17px]">
-                  <div className="w-[600px] h-[400px] relative">
-                    {/* 教师照片 */}
-                    <div className="w-[400px] h-[400px] bg-gray-200">
-                      {teacher.image ? (
-                        <img src={teacher.image} alt={teacher.name} className="object-cover w-full h-full" />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200" />
-                      )}
-                    </div>
-                    
-                    {/* 教师信息 - 覆盖在图片右侧 */}
-                    <div className="absolute top-[60px] right-0 w-[300px] bg-white pl-[40px]">
-                      <h3 className="text-[25px] font-normal text-[#282626] mb-[24px]">{teacher.name}</h3>
-                      {Array.isArray(teacher.description) ? (
-                        <div className="space-y-[16px]">
-                          {teacher.description.map((item, index) => (
-                            <p key={index} className="text-[16px] font-normal text-[#282626] leading-[19px] opacity-80">
-                              • {item}
-                            </p>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-[16px] font-normal text-[#282626] leading-[19px] opacity-80">{teacher.description}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </div>
-      </section>
-
-      {/* PortfolioShowcase 部分 */}
-      <section className="w-[1440px] mx-auto h-[884px] bg-white flex items-center justify-center mb-10">
-        <div className="flex">
-          {portfolios.map(portfolio => (
-            <div 
-              key={portfolio.id}
-              className={`w-[300px] h-[824px] overflow-hidden relative ${portfolio.bgColor}`}
+      {/* Why WeArt Section */}
+      <section className="py-8 md:py-16 px-4 md:px-8 bg-white">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12">
+          为什么选择WeArt
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {navItems.map((item) => (
+            <div
+              key={item.id}
+              className={`${item.bgColor} rounded-lg p-6 md:p-8 cursor-pointer transform transition-transform hover:scale-105`}
+              onClick={() => handleNavItemClick(item.id)}
             >
-              {/* 作品图片 */}
-              <div className="w-full h-full">
-                {portfolio.image ? (
-                  <img src={portfolio.image} alt={portfolio.title} className="object-cover w-full h-full" />
-                ) : (
-                  <div className="w-full h-full" />
-                )}
+              <h3 className={`${item.textColor} text-xl md:text-2xl font-bold mb-4`}>
+                {item.text}
+              </h3>
+              <p className="text-white text-sm md:text-base">
+                {item.content}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Featured Courses Section */}
+      <section className="py-8 md:py-16 px-4 md:px-8 bg-gray-50">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12">
+          精选课程
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {courses.map((course) => (
+            <div
+              key={course.id}
+              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+            >
+              <div className="relative pt-[75%]">
+                <img
+                  src={course.image}
+                  alt={course.title}
+                  className="absolute top-0 left-0 w-full h-full object-cover"
+                />
               </div>
-              
-              {/* 渐变遮罩 */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-              
-              {/* 作品信息 */}
-              <div className="absolute bottom-0 left-0 right-0 pb-[24px] pt-0 px-0">
-                <div className="ml-[24px] mb-[8px]">
-                  <p className="text-2xl font-normal text-white">{portfolio.artist}</p>
+              <div className="p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                  {course.title}
+                </h3>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Instructor Team Section */}
+      <section className="py-8 md:py-16 px-4 md:px-8 bg-white">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12">
+          师资团队
+        </h2>
+        <Slider {...teacherSettings}>
+          {teachers.map((teacher) => (
+            <div key={teacher.id} className="px-2 md:px-4">
+              <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+                <div className="relative pt-[100%]">
+                  <img
+                    src={teacher.image}
+                    alt={teacher.name}
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                  />
                 </div>
-                <div className="flex items-center ml-[24px] mr-[24px]">
-                  <h3 className="flex-1 text-xl font-light text-white">{portfolio.title}</h3>
-                  
-                  {/* 箭头按钮 */}
-                  <button className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center">
-                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
-                      <path d="M1 1L6 6L1 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                    </svg>
-                  </button>
+                <div className="p-4 md:p-6">
+                  <h3 className="text-xl md:text-2xl font-bold mb-2">{teacher.name}</h3>
+                  <ul className="space-y-2">
+                    {teacher.description.map((desc, index) => (
+                      <li key={index} className="text-sm md:text-base text-gray-600">
+                        {desc}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </Slider>
+      </section>
+
+      {/* Portfolio Showcase Section */}
+      <section className="py-8 md:py-16 px-4 md:px-8 bg-gray-50">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12">
+          优秀作品集
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          {portfolios.map((portfolio) => (
+            <div
+              key={portfolio.id}
+              className={`${portfolio.bgColor} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow`}
+            >
+              <div className="relative pt-[133%]">
+                <img
+                  src={portfolio.image}
+                  alt={portfolio.title}
+                  className="absolute top-0 left-0 w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                  <h3 className="text-white text-lg md:text-xl font-semibold mb-1">
+                    {portfolio.artist}
+                  </h3>
+                  <p className="text-white/80 text-sm md:text-base">
+                    {portfolio.title}
+                  </p>
                 </div>
               </div>
             </div>
@@ -454,62 +366,26 @@ const Home = () => {
         </div>
       </section>
 
-      {/* TeachingScene 部分 */}
-      <section className="w-[1440px] h-[801px] mx-auto bg-white">
-        <div className="flex h-full">
-          {/* 左侧内容区域 */}
-          <div className="w-[720px] relative pt-[39px] pl-[45px]">
-            {/* 主标题 */}
-            <div className="mb-[60px]">
-              <h2 className="text-[63px] font-black text-[#282626] leading-[76px]">激发创意，</h2>
-              <h2 className="text-[63px] font-black text-[#282626] leading-[76px]">塑造未来</h2>
-            </div>
-
-            {/* 副标题 */}
-            <div className="mb-[30px]">
-              <p className="text-[25px] font-normal text-[#282626]">创意在此焕发新生</p>
-            </div>
-
-            {/* 描述文字 */}
-            <div className="w-[507px] mb-[40px]">
-              <p className="text-[16px] leading-[19px] text-[#282626]">
-                在WeArt学校，我们通过精心设计的学习环境和创新的课程，致力于激发每位学生的创造潜力，为他们的艺术旅程铺就成功之路。感受艺术卓越的理想环境，我们精心设计的空间与专注的教师团队共同支持您的创意之旅
-              </p>
-            </div>
-
-            {/* 地图组件 */}
-            <div className="w-[507px] h-[180px]">
-              <iframe 
-                title="WeArt Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.5711001262204!2d-79.3485732!3d43.855651!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4d3e1a302f823%3A0xb3c756c2100ab1f3!2s21%20Fairburn%20Dr%20%2320%2C%20Markham%2C%20ON%20L6G%200A4!5e0!3m2!1sen!2sca!4v1615923234567!5m2!1sen!2sca" 
-                width="100%" 
-                height="100%" 
-                style={{border:0}} 
-                allowFullScreen="" 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade">
-              </iframe>
-            </div>
-          </div>
-
-          {/* 右侧内容区域 */}
-          <div className="w-[720px] relative">
-            {/* 右上角文字 */}
-            <div className="absolute right-[45px] top-[39px] text-right">
-              <p className="text-[16px] text-[#282626] mb-[8px]">精心打造的空间</p>
-              <p className="text-[16px] text-[#282626]">艺术与卓越在此交融</p>
-            </div>
-
-            {/* 右侧轮播图 */}
-            <div className="absolute right-[45px] top-[81px] w-[507px] h-[720px] bg-[#404040] overflow-hidden">
-              <Slider {...sceneSettings} className="teaching-scene-carousel">
-                {scenes.map((scene) => (
-                  <div key={scene.id} className="h-[720px]">
-                    <div className="w-full h-full bg-gray-600"></div>
+      {/* Teaching Scene Section */}
+      <section className="relative py-8 md:py-16 bg-gray-900 text-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12">
+            教学场景
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            <Slider {...sceneSettings}>
+              {scenes.map((scene) => (
+                <div key={scene.id} className="px-2">
+                  <div className="relative pt-[56.25%]">
+                    <img
+                      src={scene.image}
+                      alt={`Teaching scene ${scene.id}`}
+                      className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+                    />
                   </div>
-                ))}
-              </Slider>
-            </div>
+                </div>
+              ))}
+            </Slider>
           </div>
         </div>
       </section>
