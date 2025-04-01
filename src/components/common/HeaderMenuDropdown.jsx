@@ -2,8 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const SubMenuItem = ({ item, isActive, hasChildren }) => {
+const SubMenuItem = ({ item, isActive, hasChildren, isMobile }) => {
   const [showSubMenu, setShowSubMenu] = useState(false);
+
+  if (isMobile) {
+    return (
+      <div className="pl-4">
+        <Link
+          to={item.path}
+          className={`block py-2 text-sm ${
+            isActive ? 'text-[#F46801]' : 'text-gray-600 hover:text-[#F46801]'
+          } transition-colors`}
+        >
+          {item.text}
+        </Link>
+        {hasChildren && item.subItems && item.subItems.length > 0 && (
+          <div className="pl-4 border-l border-gray-200">
+            {item.subItems.map((subItem, idx) => (
+              <SubMenuItem
+                key={idx}
+                item={subItem}
+                isActive={false}
+                hasChildren={subItem.subItems && subItem.subItems.length > 0}
+                isMobile={true}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -32,6 +60,7 @@ const SubMenuItem = ({ item, isActive, hasChildren }) => {
               item={subItem}
               isActive={false}
               hasChildren={subItem.subItems && subItem.subItems.length > 0}
+              isMobile={false}
             />
           ))}
         </div>
@@ -40,7 +69,7 @@ const SubMenuItem = ({ item, isActive, hasChildren }) => {
   );
 };
 
-const HeaderMenuDropdown = ({ title, menuItems, link }) => {
+const HeaderMenuDropdown = ({ title, menuItems, link, isMobile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const location = useLocation();
@@ -58,6 +87,34 @@ const HeaderMenuDropdown = ({ title, menuItems, link }) => {
     
     setIsActive(checkActive(menuItems));
   }, [location.pathname, link, menuItems]);
+
+  if (isMobile) {
+    return (
+      <div className="px-4">
+        <Link
+          to={link}
+          className={`block py-2 text-base ${
+            isActive ? 'text-[#F46801]' : 'text-gray-800 hover:text-[#F46801]'
+          } transition-colors`}
+        >
+          {title}
+        </Link>
+        {menuItems.length > 0 && (
+          <div className="pl-4 border-l border-gray-200">
+            {menuItems.map((item, idx) => (
+              <SubMenuItem
+                key={idx}
+                item={item}
+                isActive={location.pathname.startsWith(item.path)}
+                hasChildren={item.subItems && item.subItems.length > 0}
+                isMobile={true}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (menuItems.length === 0) {
     return (
@@ -103,6 +160,7 @@ const HeaderMenuDropdown = ({ title, menuItems, link }) => {
               item={item}
               isActive={location.pathname.startsWith(item.path)}
               hasChildren={item.subItems && item.subItems.length > 0}
+              isMobile={false}
             />
           ))}
         </div>
@@ -118,7 +176,8 @@ SubMenuItem.propTypes = {
     subItems: PropTypes.array
   }).isRequired,
   isActive: PropTypes.bool.isRequired,
-  hasChildren: PropTypes.bool.isRequired
+  hasChildren: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool.isRequired
 };
 
 HeaderMenuDropdown.propTypes = {
@@ -131,10 +190,12 @@ HeaderMenuDropdown.propTypes = {
     })
   ),
   link: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool
 };
 
 HeaderMenuDropdown.defaultProps = {
   menuItems: [],
+  isMobile: false
 };
 
 export default HeaderMenuDropdown; 
