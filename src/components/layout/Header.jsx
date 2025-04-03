@@ -128,48 +128,54 @@ const Header = () => {
         onClick={toggleMobileMenu}
       />
       <nav
-        className={`fixed right-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ maxHeight: '100vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
-      >
-        <div className="p-4 border-b">
-          <button
-            onClick={() => setLanguage(language === '中文' ? 'English' : '中文')}
-            className="w-full px-4 py-2 bg-transparent text-[#282626] hover:text-[#F46801] transition-colors text-left md:hidden"
-            style={{ backgroundColor: 'transparent' }}
-          >
-            {language}
-          </button>
-        </div>
-        <div className="py-4 h-full overflow-y-auto">
-          {menuItems.map((item, index) => (
-            <div key={index} className="px-4">
+  className={`fixed right-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 ease-in-out lg:hidden ${
+    isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+  }`}
+  style={{ 
+    maxHeight: '100vh', 
+    overflowY: 'auto', 
+    WebkitOverflowScrolling: 'touch',
+    msOverflowStyle: 'none',
+    scrollbarWidth: 'none'
+  }}
+>
+  <div className="p-4 border-b">
+    <button
+      onClick={() => setLanguage(language === '中文' ? 'English' : '中文')}
+      className="w-full px-4 py-2 bg-transparent text-[#282626] hover:text-[#F46801] transition-colors text-left md:hidden"
+      style={{ backgroundColor: 'transparent' }}
+    >
+      {language}
+    </button>
+  </div>
+  <div className="py-4" style={{ overflow: 'visible' }}>
+    {menuItems.map((item, index) => (
+      <div key={index} className="px-4">
+        <Link
+          to={item.link}
+          className="block py-2 text-gray-800 hover:text-[#F46801] transition-colors"
+          onClick={toggleMobileMenu}
+        >
+          {item.name}
+        </Link>
+        {item.subItems.length > 0 && (
+          <div className="pl-4 border-l border-gray-200">
+            {item.subItems.map((subItem, subIndex) => (
               <Link
-                to={item.link}
-                className="block py-2 text-gray-800 hover:text-[#F46801] transition-colors"
+                key={subIndex}
+                to={subItem.path}
+                className="block py-2 text-sm text-gray-600 hover:text-[#F46801] transition-colors"
                 onClick={toggleMobileMenu}
               >
-                {item.name}
+                {subItem.text}
               </Link>
-              {item.subItems.length > 0 && (
-                <div className="pl-4 border-l border-gray-200">
-                  {item.subItems.map((subItem, subIndex) => (
-                    <Link
-                      key={subIndex}
-                      to={subItem.path}
-                      className="block py-2 text-sm text-gray-600 hover:text-[#F46801] transition-colors"
-                      onClick={toggleMobileMenu}
-                    >
-                      {subItem.text}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </nav>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</nav>
     </header>
   );
 };
